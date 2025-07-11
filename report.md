@@ -122,3 +122,33 @@ This type of information should be internal only
 - The endpoint is now protected using JWT authentication
 - Sensitive fields like `SECRET_KEY hint` and platform details were removed
 - Only returns basic status and server name
+
+---
+
+## 🔍 Optional
+
+These are not required, but are good practices to consider in a real-world project.
+
+### 1. Input validation in `/login`
+
+**Description:**
+The current `/login` endpoint does not check if `username` or `password` are empty or missing
+
+**Risk:**
+This is not a security issue, but may cause unnecessary database queries or user confusion
+
+**Suggestion:**
+Add a check to return `400 Bad Request` if either field is missing or empty
+
+---
+
+### 2. Implement refresh tokens
+
+**Description:**
+Access tokens expire after 45 minutes. Users need to log in again to get a new token
+
+**Benefit:**
+Refresh tokens would allow longer sessions without repeated logins
+
+**Suggestion:**
+Add a `/refresh` endpoint and manage refresh tokens securely using a second JWT or UUID stored in the database
