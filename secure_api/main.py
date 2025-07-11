@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 import sqlite3
 import jwt
 import os
@@ -47,6 +48,7 @@ async def login(request: Request):
     data = await request.json()
     username = data.get("username")
     password = data.get("password")
+    expires = datetime.utcnow() + timedelta(minutes=45)
 
     query = "SELECT * FROM users WHERE username = ?"
     with sqlite3.connect(DB_PATH) as conn:
@@ -55,7 +57,7 @@ async def login(request: Request):
         user = cursor.fetchone()
 
     if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
-        token = jwt.encode({"user_id": user[0], "username": user[1]}, SECRET_KEY, algorithm="HS256")
+        token = jwt.encode({"user_id": user[0], "username": user[1], "exp": expires}, SECRET_KEY, algorithm="HS256")
         return {"token": token}
     
     raise HTTPException(status_code=401, detail="Invalid credentials")
