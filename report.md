@@ -61,3 +61,17 @@ Comparing raw passwords with hashed ones doesn't work and breaks the login. It a
 **Fix:**
 - The login now only selects the user by username.
 - Then it checks the password using `bcrypt.checkpw()`, which compares the entered password with the stored hash.
+
+## 5. Command injection vulnerability in /exec
+
+**Where was the problem:**
+There was an endpoint (`/exec`) that allowed any command to be executed on the system using `os.system()` and user input.
+
+**Details:**
+This is a very dangerous practice. A user could send commands like `rm -rf /` or install malware on the server. The input was not validated or restricted in any way.
+
+**Level Risk:** Critical
+Anyone could run any system command just by calling this endpoint.
+
+**Fix:**
+- The endpoint was deleted completely, since it had no real purpose and posed a high security risk.
