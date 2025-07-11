@@ -1,15 +1,20 @@
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from dotenv import load_dotenv
 import sqlite3
 import jwt
 import os
 import platform
 import socket
 
+load_dotenv()
 app = FastAPI()
 
-SECRET_KEY = "supersecret"
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY not set in environment variables")
 DB_PATH = "./users.db"
+print SECRET_KEY
 
 # Database setup
 @app.on_event("startup")
