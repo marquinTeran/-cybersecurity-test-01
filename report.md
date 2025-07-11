@@ -91,3 +91,18 @@ This is a serious session management issue and a common security problem.
 - Added the `exp` (expiration) field to the JWT payload.
 - Tokens now expire 45 minutes after creation.
 - If a token is expired, the user must log in again to receive a new one.
+
+## 7. /profile endpoint was not protected
+
+**Where was the problem:**
+The `/profile/{user_id}` endpoint could be accessed without a valid token. Anyone could get user data by knowing the ID.
+
+**Details:**
+There was no authentication required. This means any user could retrieve data about others without logging in.
+
+**Level Risk:** High
+User data exposure is a serious privacy and security issue.
+
+**Fix:**
+- Added token validation using `HTTPBearer` and `jwt.decode()`.
+- Now the endpoint rejects requests with no or invalid token.
