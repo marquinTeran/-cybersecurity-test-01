@@ -75,3 +75,19 @@ Anyone could run any system command just by calling this endpoint.
 
 **Fix:**
 - The endpoint was deleted completely, since it had no real purpose and posed a high security risk.
+
+## 6. JWT tokens did not expire
+
+**Where was the problem:**
+The `/login` endpoint created JWT tokens without an expiration date.
+
+**Details:**
+Tokens without expiration can be used forever. If a token is stolen, an attacker can access the system permanently without re-authentication.
+
+**Level Risk:** High
+This is a serious session management issue and a common security problem.
+
+**Fix:**
+- Added the `exp` (expiration) field to the JWT payload.
+- Tokens now expire 45 minutes after creation.
+- If a token is expired, the user must log in again to receive a new one.
