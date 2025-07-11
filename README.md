@@ -47,7 +47,7 @@ The goal is to demonstrate your ability to:
 
 ```bash
 # Clone this project
-$ git clone <repo-url> && cd insecure-fastapi
+$ git clone <repo-url> && cd -cybersecurity-test-01
 
 # Build and run
 $ docker-compose up --build
