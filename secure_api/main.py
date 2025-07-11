@@ -50,9 +50,6 @@ async def health(token_data: dict = Depends(verify_token)):
     return {
         "status": "ok",
         "hostname": socket.gethostname(),
-        "platform": platform.platform(),
-        "python_version": platform.python_version(),
-        "secret_key_hint": SECRET_KEY[:5] + "*****"
     }
 
 @app.post("/login")
