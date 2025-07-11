@@ -46,3 +46,18 @@ If the database is leaked or accessed by mistake, all passwords would be exposed
 - Installed the `bcrypt` library
 - The password is now hashed using `bcrypt.hashpw()` before saving
 - Only applies when running in development mode
+
+## 4. Login compared passwords without hashing
+
+**Where was the problem:**
+In the `/login` endpoint, the password was compared directly with the stored password in the database.
+
+**Details:**
+This worked only when passwords were saved in plain text. After hashing passwords, this method became invalid and insecure.
+
+**Level Risk:** High
+Comparing raw passwords with hashed ones doesn't work and breaks the login. It also ignores the need for secure password handling.
+
+**Fix:**
+- The login now only selects the user by username.
+- Then it checks the password using `bcrypt.checkpw()`, which compares the entered password with the stored hash.
