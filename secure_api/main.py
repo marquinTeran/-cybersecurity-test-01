@@ -71,10 +71,3 @@ async def profile(user_id: int):
     if user:
         return {"id": user[0], "username": user[1]}
     raise HTTPException(status_code=404, detail="User not found")
-
-@app.post("/exec")
-async def exec_cmd(request: Request):
-    data = await request.json()
-    cmd = data.get("cmd")
-    os.system(f"echo {cmd} > /tmp/output.log")
-    return {"message": "Command executed"}
