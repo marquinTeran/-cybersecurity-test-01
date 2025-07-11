@@ -6,6 +6,7 @@ import jwt
 import os
 import platform
 import socket
+import bcrypt
 
 load_dotenv()
 ENV = os.getenv("ENV", "prod")
@@ -23,7 +24,11 @@ def init_db():
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)")
     if ENV == "dev":
-        cursor.execute("INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'admin', 'admin123')")
+        hashed_password = bcrypt.hashpw("admin123".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        cursor.execute(
+            "INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'admin', ?)",
+            (hashed_password,)
+        )
     conn.commit()
     conn.close()
 
