@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import sqlite3
 import jwt
 import os
@@ -11,6 +12,17 @@ import bcrypt
 
 load_dotenv()
 ENV = os.getenv("ENV", "prod")
+security = HTTPBearer()
+
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=["HS256"])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
 app = FastAPI()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -63,7 +75,7 @@ async def login(request: Request):
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.get("/profile/{user_id}")
-async def profile(user_id: int):
+async def profile(user_id: int, token_data: dict = Depends(verify_token)):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT id, username FROM users WHERE id = ?", (user_id,))
