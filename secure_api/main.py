@@ -8,6 +8,7 @@ import platform
 import socket
 
 load_dotenv()
+ENV = os.getenv("ENV", "prod")
 app = FastAPI()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -21,7 +22,8 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)")
-    cursor.execute("INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'admin', 'admin123')")
+    if ENV == "dev":
+        cursor.execute("INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'admin', 'admin123')")
     conn.commit()
     conn.close()
 
