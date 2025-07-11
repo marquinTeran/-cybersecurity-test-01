@@ -48,16 +48,16 @@ async def login(request: Request):
     username = data.get("username")
     password = data.get("password")
 
-    query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute(query)
-    user = cursor.fetchone()
-    conn.close()
+    query = "SELECT * FROM users WHERE username = ?"
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute(query, (username,))
+        user = cursor.fetchone()
 
-    if user:
+    if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
         token = jwt.encode({"user_id": user[0], "username": user[1]}, SECRET_KEY, algorithm="HS256")
         return {"token": token}
+    
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.get("/profile/{user_id}")
