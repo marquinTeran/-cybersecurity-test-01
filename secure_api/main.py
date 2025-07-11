@@ -46,7 +46,7 @@ def init_db():
     conn.close()
 
 @app.get("/health")
-async def health():
+async def health(token_data: dict = Depends(verify_token)):
     return {
         "status": "ok",
         "hostname": socket.gethostname(),
