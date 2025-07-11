@@ -28,10 +28,11 @@ The goal is to demonstrate your ability to:
 - `POST /login`
 
 - `GET /profile/{user_id}`
-
-- `POST /exec`
+     Requires Bearer token in the `Authorization` header. Returns the user's profile.
 
 - `GET /health`
+
+> Note: The `/exec` endpoint was removed due to security risks.
 
 ---
 
