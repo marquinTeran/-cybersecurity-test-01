@@ -106,3 +106,19 @@ User data exposure is a serious privacy and security issue.
 **Fix:**
 - Added token validation using `HTTPBearer` and `jwt.decode()`.
 - Now the endpoint rejects requests with no or invalid token.
+
+## 8. Sensitive info in /health endpoint
+
+**Where was the problem:**
+The `/health` endpoint returned system-level details like OS, hostname, Python version, and a part of the secret key
+
+**Details:**
+If exposed to the public, this information could help attackers find vulnerabilities or plan attacks
+
+**Level Risk:** Medium
+This type of information should be internal only
+
+**Fix:**
+- The endpoint is now protected using JWT authentication
+- Sensitive fields like `SECRET_KEY hint` and platform details were removed
+- Only returns basic status and server name
