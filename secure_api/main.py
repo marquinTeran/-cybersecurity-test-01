@@ -14,7 +14,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY not set in environment variables")
 DB_PATH = "./users.db"
-print SECRET_KEY
 
 # Database setup
 @app.on_event("startup")
